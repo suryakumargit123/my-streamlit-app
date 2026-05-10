@@ -4,7 +4,7 @@ import streamlit as st
 # Page configuration
 st.set_page_config(page_title="Streamlit Reviewer Demo", icon="🚀")
 
-st.title("📊 Data Processor App")
+st.title("📊 My New App Version")
 st.markdown("This app demonstrates a functional UI for the automated pipeline to review.")
 
 # Sidebar for inputs

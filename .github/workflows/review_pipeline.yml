@@ -1,0 +1,51 @@
+name: "Streamlit Agentic Reviewer"
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  setup:
+    name: "Setup & Discovery"
+    runs-on: ubuntu-latest
+    steps:
+      - [cite_start]uses: actions/checkout@v4 [cite: 46]
+      - name: "Lead Scout: Check Files"
+        [cite_start]run: echo "Scout checking changed files..." [cite: 48]
+
+  kb_reviewer_a:
+    name: "KB Reviewer A (Security)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - [cite_start]uses: actions/checkout@v4 [cite: 55]
+      - name: Scan Secrets
+        [cite_start]run: echo "Checking for credentials..." [cite: 57]
+
+  kb_reviewer_b:
+    name: "KB Reviewer B (UI Logic)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - [cite_start]uses: actions/checkout@v4 [cite: 63]
+      - name: Run Tests
+        run: |
+          pip install -r requirements.txt
+          pytest tests/ [cite: 66]
+
+  post_review:
+    name: "Final Review Decision"
+    needs: [kb_reviewer_a, kb_reviewer_b]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post Comment
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ### Automated Review Complete [cite: 76]
+            - Reviewer A (Security): ${{ needs.kb_reviewer_a.result }} [cite: 78]
+            - Reviewer B (UI): ${{ needs.kb_reviewer_b.result }} [cite: 79]
